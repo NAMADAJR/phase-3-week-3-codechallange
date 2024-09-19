@@ -1,6 +1,25 @@
-from db.connection import get_connection, get_cursor
+from db.connections import get_connection, get_cursor
 
 class Band:
+    
+    @staticmethod
+    def play_in_venue(band_id, venue_id, date):
+        connection = get_connection()
+        cursor = get_cursor(connection)
+        
+        try:
+            # Check if the concert already exists
+            cursor.execute("SELECT * FROM concerts WHERE band_id = ? AND venue_id = ? AND date = ?", (band_id, venue_id, date))
+            if cursor.fetchone() is None:  # If no record is found
+                cursor.execute("INSERT INTO concerts (band_id, venue_id, date) VALUES (?, ?, ?)", (band_id, venue_id, date))
+                connection.commit()
+                print("Concert added.")
+            else:
+                print("Concert already exists.")
+        finally:
+            cursor.close()
+            connection.close()
+
     @staticmethod
     def concerts(band_id):
         connection = get_connection()

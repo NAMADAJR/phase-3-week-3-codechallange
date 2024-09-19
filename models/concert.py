@@ -1,4 +1,4 @@
-from db.connection import get_connection, get_cursor
+from db.connections import get_connection, get_cursor
 
 class Concert:
     @staticmethod
